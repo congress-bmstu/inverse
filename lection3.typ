@@ -1,5 +1,9 @@
 #import "notes.typ": *
 
+#show math.lt.eq: math.lt.slant
+#show math.gt.eq: math.gt.slant
+// #let integral = math.op(math.integral, limits: true)
+
 = Лекция 3.
 
 #example[
@@ -82,8 +86,7 @@
   $
     A=mat(2.37,2;2,14.37),quad B=mat(b_(11),b_(12);0,b_(22))
   $
-  #set enum(numbering: "Этап 1.")
-  + $B^T B = mat(b_(11)^2, b_(11)b_(12); b_(11)b_(12), b_(22)^2)$
+  Этап 1. $B^T B = mat(b_(11)^2, b_(11)b_(12); b_(11)b_(12), b_(22)^2)$
   $ B^T B vec(x,y) = vec(0,-10) $
   $ B^T vec(ъ, ь) = vec(0,-10) $
   $
@@ -94,3 +97,93 @@
 
   _у доски_
 ]
+
+== Метод Тихонова
+
+Используется если $A$ общего вида и $exists A^(-1)$.
+Берем невязку $||A arrow(x)-arrow(b)||>=0$
+$ arrow(x)="argmin" ||A arrow(x)-arrow(b)|| exists "но неустойчиво" $
+
+$||arrow(x)||<=C$ компакт
+Функционал Тихонова:
+$ M_alpha = ||A arrow(x) - arrow(b)||^2+alpha||arrow(x)||^2, quad alpha >0 $
+...
+
+Дается приращение аргументу:
+$
+  M_alpha (arrow(x)+arrow(h))=||A (arrow(x)+arrow(h))-arrow(b)_delta||^2+alpha||arrow(x)+arrow(h)||^2\
+$
+Первое слагаемое:
+$
+  ||A (arrow(x)+arrow(h))-arrow(b)_delta||^2=||A arrow(x)-arrow(b)_delta+A arrow(h)||^2=(A arrow(x)-arrow(b)_delta+A arrow(h), space A arrow(x)-arrow(b)_delta+A arrow(h))=\
+  =(A arrow(x)-arrow(b)_delta, space A arrow(x)-arrow(b)_delta)^2+2(A arrow(x)-arrow(b)_delta, space A arrow(h))+ (A arrow(h),A arrow(h))=\
+  =||A arrow(x)-arrow(b)_delta||^2 + 2(A^T A arrow(x)- A^T arrow(b)_delta, space arrow(h)) + ||A arrow(h)||^2
+$
+Второе слагаемое:
+$
+  ||arrow(x)+arrow(h)||^2=(arrow(x)+arrow(h),space arrow(x)+arrow(h))=||arrow(x)||+2(arrow(x), space arrow(h))+||arrow(h)||^2
+$
+Тогда получим:
+$
+  M_alpha (arrow(x)+arrow(h))=
+  ||A arrow(x)-arrow(b)_delta||^2 + 2(A^T A arrow(x)- A^T arrow(b)_delta, space arrow(h)) + ||A arrow(h)||^2 + alpha[ ||arrow(x)||+2(arrow(x), space arrow(h))+||arrow(h)||^2]=\
+  = M_alpha (arrow(x)) + alpha||arrow(h)||^2 + ||A arrow(h)||^2 + 2(A^T A arrow(x)-A^T arrow(b)_delta+alpha arrow(x), space arrow(h))
+$
+Единственное решение системы имеет вид:
+$
+  arrow(x)_(alpha delta) = (A^T A + alpha E)^(-1)A^T arrow(b)_delta
+$
+Ищем такое $delta$ при котором невязка: $||A arrow(x)_(alpha delta)-arrow(b)_delta||->min$.
+
+Чтобы не заморачиваться берем последовательность $alpha_n=alpha_0 q^n$, $alpha_0>0$, $q in (0, 1)$.
+
+== Уравнения Фредгольма I рода
+$ A u = limits(integral)_a^b K(x,s)u(s) d s=f(x), quad x in[a,b] $
+$||u||^2<=C$ --- не компакт
+
+Берем пространство Соболева. Норма в нём в общем случае:
+$
+  W_2^1 = limits(integral)_a^b [(y')^2 + p(x)y^2] d x, space p in C^1[a,b], space p>0
+$
+Задаём функционал Тихонова:
+$
+  M_alpha(u)=limits(integral)_a^b d x [ limits(integral)_a^b K(x,s) u(s) d s - f(x) ]^2 + a underbrace(limits(integral)_a^b [p(u')^2+q u^2] d x, "стабилизатор")
+$
+Первое слагаемое:
+$
+  limits(integral)_a^b d x [limits(integral)_a^b K(u+h) d s - f(x)]^2 =
+  limits(integral)_a^b d x [limits(integral)_a^b K u d s - f + limits(integral)_a^b K h d s]=\
+  = limits(integral)_a^b d x limits(integral)_a^b [K u -f]^2 d s + 2limits(integral)_a^b d x [limits(integral)_a^b K u d s - f]limits(integral)_a^b K h d s + limits(integral)_a^b limits(integral)_a^b [K h d s]^2 d x
+$
+Второе слагаемое:
+$
+  limits(integral)_a^b [p(u'+h')^2+q(u+h)]^2 d x = limits(integral)_a^b {[p(u')^2+2u'h'+(h')^2] + q[u^2+2u h+h^2]} d x=\
+  =alpha{limits(integral)_a^b [p(u')^2+q u^2] d x + 2limits(integral)_a^b (p u' h' + q u h) d x + limits(integral)_a^b [p(h')^2 + q h^2] d x}=\
+  = M_alpha(u)+O(h^2)+2dot"первая вариация"
+$
+
+$
+  limits(integral)_a^b d x limits(integral)_a^b d s limits(integral)_a^b d t K(x,s)K(x,t) u(s) h(t) u(t)= limits(integral)_a^b f(x)d x limits(integral)_a^b K(x,t) u(s) h(t) d t =\
+  = limits(integral)_a^b h(t) u(t) d t limits(integral)_a^b d x limits(integral)_a^b d s [K(x,s)K(x,t)u(s)]
+$
+
+#text(
+  8pt,
+  bottom-edge: "baseline",
+  top-edge: "baseline",
+)[#align(center)[_...\u{1f474}дедок ушел в разнос окончательно\u{1f474}..._]]
+
+$ K_1(t,s)=limits(integral)_a^b K(x,s)K(x,t) d x $
+$ F(t) = limits(integral)_a^b K(x,t)f(t) d t $
+
+Получили интегрально-дифференциальное уравнение относительно функции $u$:
+$
+  cases(
+    limits(integral)_a^b K(t,s)u(s) d s - F(t) - alpha[(p u')' - q u ] = 0,
+    u'(a)=u'(b)=0, gap: #0.75em
+  )
+$<intdiffur>
+
+Решаем @intdiffur по старинке. Делаем равномерную сетку на $[a,b]$:
+$ x_i = a+i (b-a) / h $
+$ h sum_(i=0) $
