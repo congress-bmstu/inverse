@@ -10,3 +10,5 @@
 #include "lection1.typ"
 #include "lection2.typ"
 #include "lection3.typ"
+#include "parabol.typ"
+#include "lection6.typ"
